@@ -146,35 +146,8 @@ JSON
 {
   "error": "Booking not found"
 }
-🚀 How to Run & Deploy
-1. Install Dependencies
-Bash
-npm install
-2. Run Locally
-Bash
-npx wrangler dev
-3. Deploy to Cloudflare Workers
-Bash
-npx wrangler deploy
-📑 Required Documentation & Evidence
-AI Usage Log: AI_LOG.md
+ 
 
-Quality Gate Review Record: QUALITY_GATE_REVIEW.md
-
-Test Evidence Screenshots: Located in screenshots/ folder (Cases 1 - 5)
-
-## Test Evidence Screenshots
-
-### Figure 1: GET Equipment List (200 OK)
-![Case 1](screenshots/case1-200.png)
-
-### Figure 2: POST Create Booking Success (201 Created)
-![Case 2](screenshots/case2-201.png)
-
-### Figure 3: POST Overlapping Booking Conflict (409 Conflict)
-![Case 3](screenshots/case3-409.png)
-
-### Figure 4: POST Invalid Chronology Validation (400 Bad Request)
 ![Case 4](screenshots/case4-400.png)
 
 ### Figure 5: GET Missing Booking ID (404 Not Found)
