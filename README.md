@@ -1,4 +1,33 @@
-#SQL Table Schema                         
+## 🛠 Database Schema & ERD
+
+### Database Overview & Relationship
+- **`equipment` (1) ─── (N) `bookings`**
+  - **Relationship:** 1 ต่อ N (อุปกรณ์ 1 ชิ้น สามารถมีรายการจองได้หลายรายการ)
+  - **Foreign Key:** `bookings.equipmentId` เชื่อมโยงไปที่ `equipment.id`
+
+### Table Schemas
+
+#### 1. `equipment` Table
+| Field | Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `TEXT` | PRIMARY KEY | Unique ID (e.g., `"eq-101"`) |
+| `name` | `TEXT` | NOT NULL | Equipment Name (e.g., `"Projector HD"`) |
+| `category` | `TEXT` | NOT NULL | Equipment Category (e.g., `"AV"`, `"IT"`) |
+| `status` | `TEXT` | NOT NULL | Availability Status (e.g., `"available"`) |
+
+#### 2. `bookings` Table
+| Field | Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `TEXT` | PRIMARY KEY | Unique Booking ID (e.g., `"b-1728200000000"`) |
+| `equipmentId` | `TEXT` | FOREIGN KEY | Target Equipment ID (references `equipment.id`) |
+| `title` | `TEXT` | NOT NULL | Purpose/Title of reservation |
+| `startAt` | `TEXT` | NOT NULL | Start Time (ISO-8601 format) |
+| `endAt` | `TEXT` | NOT NULL | End Time (ISO-8601 format) |
+
+---
+
+### SQL Table Schema
+```sql
 CREATE TABLE IF NOT EXISTS equipment (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -14,6 +43,8 @@ CREATE TABLE IF NOT EXISTS bookings (
   endAt TEXT NOT NULL,
   FOREIGN KEY (equipmentId) REFERENCES equipment(id)
 );
+
+
 
 Complete API Contract
 1. Get All Equipment
