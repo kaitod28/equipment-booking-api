@@ -1,10 +1,150 @@
-# Campus Equipment Booking API
+#SQL Table Schema                         
+CREATE TABLE IF NOT EXISTS equipment (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  status TEXT NOT NULL
+);
 
-A backend REST API built with **Hono**, **TypeScript**, and **SQLite** for reserving campus equipment while preventing schedule conflicts.
+CREATE TABLE IF NOT EXISTS bookings (
+  id TEXT PRIMARY KEY,
+  equipmentId TEXT NOT NULL,
+  title TEXT NOT NULL,
+  startAt TEXT NOT NULL,
+  endAt TEXT NOT NULL,
+  FOREIGN KEY (equipmentId) REFERENCES equipment(id)
+);
 
-## Setup & Running Instructions
+Complete API Contract
+1. Get All Equipment
+Retrieves all equipment items available in the system.
 
-1. Install dependencies:
-   ```bash
-   npm install
-   
+Endpoint: /api/equipment
+
+HTTP Method: GET
+
+Headers: None
+
+Request Body: None
+
+Response 200 OK
+JSON
+[
+  {
+    "id": "eq-101",
+    "name": "Projector HD",
+    "category": "AV",
+    "status": "available"
+  },
+  {
+    "id": "eq-102",
+    "name": "MacBook Pro 16",
+    "category": "IT",
+    "status": "available"
+  }
+]
+2. Create Equipment Booking
+Creates a new reservation for an equipment item after executing validation checks (Missing fields, Chronology, Existence, and Time Overlap).
+
+Endpoint: /api/bookings
+
+HTTP Method: POST
+
+Headers: Content-Type: application/json
+
+Request Body:
+
+JSON
+{
+  "equipmentId": "eq-101",
+  "title": "Project Meeting",
+  "startAt": "2026-10-10T09:00:00Z",
+  "endAt": "2026-10-10T11:00:00Z"
+}
+Response 201 Created
+JSON
+{
+  "id": "b-1728200000000",
+  "equipmentId": "eq-101",
+  "title": "Project Meeting",
+  "startAt": "2026-10-10T09:00:00Z",
+  "endAt": "2026-10-10T11:00:00Z"
+}
+Response 400 Bad Request (Case A: Missing Required Fields)
+JSON
+{
+  "error": "Missing required fields"
+}
+Response 400 Bad Request (Case B: Chronology Error startAt >= endAt)
+JSON
+{
+  "error": "startAt must be strictly before endAt"
+}
+Response 404 Not Found (Equipment Does Not Exist)
+JSON
+{
+  "error": "Equipment not found"
+}
+Response 409 Conflict (Overlapping Booking Time Slot)
+JSON
+{
+  "error": "Equipment is already booked for the selected time slot"
+}
+3. Get Booking Details by ID
+Retrieves specific booking details using the unique booking ID.
+
+Endpoint: /api/bookings/:id
+
+HTTP Method: GET
+
+Headers: None
+
+Request Body: None
+
+Response 200 OK
+JSON
+{
+  "id": "b-1728200000000",
+  "equipmentId": "eq-101",
+  "title": "Project Meeting",
+  "startAt": "2026-10-10T09:00:00Z",
+  "endAt": "2026-10-10T11:00:00Z"
+}
+Response 404 Not Found
+JSON
+{
+  "error": "Booking not found"
+}
+🚀 How to Run & Deploy
+1. Install Dependencies
+Bash
+npm install
+2. Run Locally
+Bash
+npx wrangler dev
+3. Deploy to Cloudflare Workers
+Bash
+npx wrangler deploy
+📑 Required Documentation & Evidence
+AI Usage Log: AI_LOG.md
+
+Quality Gate Review Record: QUALITY_GATE_REVIEW.md
+
+Test Evidence Screenshots: Located in screenshots/ folder (Cases 1 - 5)
+
+## Test Evidence Screenshots
+
+### Figure 1: GET Equipment List (200 OK)
+![Case 1](screenshots/case1-200.png)
+
+### Figure 2: POST Create Booking Success (201 Created)
+![Case 2](screenshots/case2-201.png)
+
+### Figure 3: POST Overlapping Booking Conflict (409 Conflict)
+![Case 3](screenshots/case3-409.png)
+
+### Figure 4: POST Invalid Chronology Validation (400 Bad Request)
+![Case 4](screenshots/case4-400.png)
+
+### Figure 5: GET Missing Booking ID (404 Not Found)
+![Case 5](screenshots/case5-404.png)
